@@ -4,9 +4,7 @@ import numpy as np
 import pytesseract
 import requests
 import base64
-from dotenv import get_key
 from bs4 import BeautifulSoup
-
 
 API = "https://ulearn.nfu.edu.tw"
 URL = "https://identity.nfu.edu.tw/auth/realms/nfu/protocol/cas/login?service=https://ulearn.nfu.edu.tw/login"
@@ -35,16 +33,21 @@ def codeImg():
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
         return img, data['key']
 
-def Ulearn(username, password):
+async def Ulearn(interaction, username, password, initial=True, message=None):
+    if initial:
+        await interaction.response.defer()
+        message = await interaction.followup.send('正在嘗試登入...')
+    else:
+        await interaction.followup.edit_message(message_id=message.id, content=f'{message.content}\n重試中...')
+
     with session.get(URL, headers=Agent) as response:
         body = BeautifulSoup(response.text, 'html.parser')
-        form = body.find('div ', {'class': 'form-signin form-login'})
         action_url = body.find('form', class_='form-signin form-login')['action']
         img, key = codeImg()
         processed_img = preprocess_image(img)
         text = pytesseract.image_to_string(processed_img, config=custom_config)
         code = text.replace(" ", "").strip()
-        print(f"text: {text}")
+        await interaction.followup.edit_message(message_id=message.id, content=f"驗證碼: {text}")
 
         login_pay = {
             'username': username,
@@ -52,25 +55,27 @@ def Ulearn(username, password):
             'captchaCode': code,
             'captchaKey': key
         }
-        print(action_url)
         response = session.post(action_url, data=login_pay, headers=Agent)
 
         if response.status_code == 200:
             response_body = BeautifulSoup(response.text, 'html.parser')
             logout_links = response_body.find_all('a', string="登出")
+            root_scope_var = response_body.find('root-scope-variable', {'name': 'currentUserName'})
             if logout_links:
-                print("登入成功")
+                await interaction.followup.edit_message(message_id=message.id, content=f"{interaction.user.mention}\n登入成功 {root_scope_var['value']}")
             else:
                 info = response_body.find('span', {'style': 'color:red'})
                 if info:
-                    message = info.get_text()
-                    print(message)
-                    if message == "驗證碼錯誤":
-                        print("重試中...")
-                        Ulearn(username, password)
+                    message_content = info.get_text()
+                    await interaction.followup.edit_message(message_id=message.id, content=f"驗證碼: {text}\n{message_content}")
+                    if message_content == "驗證碼錯誤":
+                        await Ulearn(interaction, username, password, initial=False, message=message)
+                    elif message_content == "無效的帳號或密碼":
+                        await interaction.followup.edit_message(message_id=message.id, content=f"驗證碼: {text}\n無效的帳號或密碼，請檢查您的帳號和密碼。")
+                    return
                 else:
-                    print("未知的錯誤")
-                exit(0)
+                    await interaction.followup.edit_message(message_id=message.id, content="未知的錯誤")
+                return
         
             rollcalls = session.get(f"{API}/api/radar/rollcalls?api_version=1.1.0").json()
             
@@ -86,20 +91,19 @@ def Ulearn(username, password):
                         "status": rollcall["status"]
                     })
                     class_id = rollcall["rollcall_id"]
-                print(json.dumps(result, ensure_ascii=False, indent=4))
-                if result == []:
-                    print("暫無點名")
-            except:
-                print("點名列表獲取失敗")
-                exit(1)
+                await interaction.followup.edit_message(message_id=message.id, content=json.dumps(result, ensure_ascii=False, indent=4))
+                if not result:
+                    await interaction.followup.send("暫無點名")
+            except Exception as e:
+                await interaction.followup.send("點名列表獲取失敗")
+                return
+
         answer_pay = {
             "numberCode": "1234"
         }
-        def return_rollcall():
+        async def return_rollcall():
             _rollcall = session.put(f"{API}/api/rollcall/{class_id}/answer_number_rollcall", data=answer_pay, headers=Agent)
-            print(_rollcall)
+            await interaction.followup.send(_rollcall)
             "https://tronclass.com.tw/api/radar/rollcalls?api_version=1.1.0" #可點名列表
             "https://tronclass.com.tw/statistics/api/user-visits" #用戶狀態
             "https://tronclass.com.tw/api/rollcall/{class_id}/answer_number_rollcall" #數字點名code返回
-        
-Ulearn("51215128", "RayLi97420")
