@@ -63,7 +63,7 @@ async def set_channel(interaction: discord.Interaction):
     else:
         await interaction.response.send_message('沒有可用的頻道來綁定蘿菠特。', ephemeral=True)
 
-@bot.tree.command(name="ulearn_login", description="向機器人登入帳號")
+@bot.tree.command(name="ulearn_login", description="向蘿菠特登入帳號")
 async def ulearn_login(interaction: discord.Interaction):
     if bound_channel_id is None:
         await interaction.response.send_message('蘿菠特未綁定到任何頻道。請先使用 /set_channel 命令綁定頻道。', ephemeral=False)
