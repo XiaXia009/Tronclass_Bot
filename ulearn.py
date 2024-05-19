@@ -4,6 +4,7 @@ import numpy as np
 import pytesseract
 import requests
 import base64
+import json_edit
 from bs4 import BeautifulSoup
 
 API = "https://ulearn.nfu.edu.tw"
@@ -33,7 +34,7 @@ def codeImg():
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
         return img, data['key']
 
-async def Ulearn(interaction, username, password, initial=True, message=None):
+async def Ulearn(interaction, username, password, user_id, initial=True, message=None):
     if initial:
         await interaction.response.defer()
         message = await interaction.followup.send('正在嘗試登入...')
@@ -62,6 +63,7 @@ async def Ulearn(interaction, username, password, initial=True, message=None):
             logout_links = response_body.find_all('a', string="登出")
             root_scope_var = response_body.find('root-scope-variable', {'name': 'currentUserName'})
             if logout_links:
+                json_edit.add_user(username, password)
                 await interaction.followup.edit_message(message_id=message.id, content=f"{interaction.user.mention}\n登入成功 {root_scope_var['value']}")
             else:
                 info = response_body.find('span', {'style': 'color:red'})
@@ -91,11 +93,10 @@ async def Ulearn(interaction, username, password, initial=True, message=None):
                         "status": rollcall["status"]
                     })
                     class_id = rollcall["rollcall_id"]
-                await interaction.followup.edit_message(message_id=message.id, content=json.dumps(result, ensure_ascii=False, indent=4))
                 if not result:
-                    await interaction.followup.send("暫無點名")
+                    await interaction.channel.send("暫無點名")
             except Exception as e:
-                await interaction.followup.send("點名列表獲取失敗")
+                await interaction.send("點名列表獲取失敗")
                 return
 
         answer_pay = {

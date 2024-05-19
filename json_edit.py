@@ -8,7 +8,7 @@ def save_data(data, filepath='userdata.json'):
     with open(filepath, 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-def add_user(student_id, password, filepath='userdata.json'):
+def add_user(student_id, password, user_id, filepath='userdata.json'):
     data = load_data(filepath)
     user_found = False
 
@@ -19,7 +19,7 @@ def add_user(student_id, password, filepath='userdata.json'):
             break
 
     if not user_found:
-        new_user = {"Student_ID": student_id, "Password": password}
+        new_user = {"Student_ID": student_id, "Password": password, "User_ID": user_id}
         data.append(new_user)
 
     save_data(data, filepath)
