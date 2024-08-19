@@ -14,6 +14,7 @@ Agent = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/53
 custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 session = requests.Session()
 
+
 def preprocess_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     denoised = cv2.fastNlMeansDenoising(gray, None, 30, 7, 21)
@@ -58,8 +59,17 @@ def Ulearn(username, password):
         if response.status_code == 200:
             response_body = BeautifulSoup(response.text, 'html.parser')
             logout_links = response_body.find_all('a', string="登出")
+            ch_name = response_body.find('root-scope-variable', {'name': 'currentUserName'})
+            header_div = response_body.find('div', class_='header header-autocollapse wg-header')
+            if header_div is not None:
+                ng_init_content = header_div.get('ng-init', '')
+                start = ng_init_content.find("avatarSmallUrl = '") + len("avatarSmallUrl = '")
+                end = ng_init_content.find("';", start)
+                avatar_small_url = ng_init_content[start:end]
+                avatar_small_url = avatar_small_url.replace('?thumbnail=32x32', '?thumbnail=300x300')
             if logout_links:
-                print("登入成功")
+                print(f"登入成功 {ch_name["value"]}")
+                print(avatar_small_url)
             else:
                 info = response_body.find('span', {'style': 'color:red'})
                 if info:
@@ -92,6 +102,8 @@ def Ulearn(username, password):
             except:
                 print("點名列表獲取失敗")
                 exit(1)
+        session.get("https://ulearn.nfu.edu.tw/logout")
+        session.get("https://identity.nfu.edu.tw/auth/realms/nfu/protocol/cas/logout?service=https%3A//ulearn.nfu.edu.tw&locale=zh_TW")
         answer_pay = {
             "numberCode": "1234"
         }
@@ -101,5 +113,3 @@ def Ulearn(username, password):
             "https://tronclass.com.tw/api/radar/rollcalls?api_version=1.1.0" #可點名列表
             "https://tronclass.com.tw/statistics/api/user-visits" #用戶狀態
             "https://tronclass.com.tw/api/rollcall/{class_id}/answer_number_rollcall" #數字點名code返回
-        
-Ulearn("51215128", "RayLi97420")
