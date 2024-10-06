@@ -12,6 +12,7 @@ API = "https://ulearn.nfu.edu.tw"
 URL = "https://identity.nfu.edu.tw/auth/realms/nfu/protocol/cas/login?service=https://ulearn.nfu.edu.tw/login"
 Agent = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
 custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+#pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 if not os.path.exists('./userimg/'):
     os.makedirs('./userimg/')
@@ -44,7 +45,7 @@ async def Relord(session):
     except:
         pass
 
-async def Ulearn(interaction, username, password, DC_user_id, retry_count, put):
+async def Ulearn(interaction, username, password, DC_user_id, retry_count, put, roll_call_type):
     async with aiohttp.ClientSession() as session:
         async with session.get(URL, headers=Agent) as response:
             body = BeautifulSoup(await response.text(), 'html.parser')

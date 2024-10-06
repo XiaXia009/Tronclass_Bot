@@ -61,8 +61,6 @@ def search(user_id, filepath='./userdata.json'):
                 return username, password
             except:
                 return None, None
-        else:
-            return None, None
             
 def put(filepath='./userdata.json'):
     data = load_data(filepath)
