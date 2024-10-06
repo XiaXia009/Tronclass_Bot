@@ -1,6 +1,4 @@
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <h1>Tronclass_Bot</h1>
-</div>
+# 👾Tronclass_Bot👾
 可以在各Tronclass變體使用 如:虎尾科技大學Ulearn  
 該程式掛載在discord機器人上  
 目前僅支援數字點名  
