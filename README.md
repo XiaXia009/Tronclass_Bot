@@ -2,6 +2,7 @@
 可以在各Tronclass變體使用 如:虎尾科技大學Ulearn  
 該程式掛載在discord機器人上  
 目前僅支援數字點名  
+已經重製過token了 別想偷:>
   
 你會需要ocr-tesseract 並且需要把路徑加到環境變數
 
