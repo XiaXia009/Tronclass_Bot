@@ -45,7 +45,7 @@ async def Relord(session):
     except:
         pass
 
-async def Ulearn(interaction, username, password, DC_user_id, retry_count, put, roll_call_type):
+async def Ulearn(interaction, username, password, DC_user_id, retry_count, put):
     async with aiohttp.ClientSession() as session:
         async with session.get(URL, headers=Agent) as response:
             body = BeautifulSoup(await response.text(), 'html.parser')
