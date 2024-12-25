@@ -5,6 +5,7 @@
 已經重製過token了 別想偷:>
   
 你會需要[ocr-tesseract](https://github.com/UB-Mannheim/tesseract/wiki) 並且需要把路徑加到環境變數💩  
+  
 這是雷達點名:  
 (但我沒有更新到機器人裡 你要自己接🫶)  
 [![Tronclass_Position](https://github-readme-stats.vercel.app/api/pin/?username=XiaXia009&repo=Tronclass_Position&theme=prussian)](https://github.com/XiaXia009/Tronclass_Position)
