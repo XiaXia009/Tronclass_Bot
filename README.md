@@ -2,13 +2,29 @@
 可以在各Tronclass變體使用 如:虎尾科技大學Ulearn  
 該程式掛載在discord機器人上  
 目前僅支援數字點名 雷達點名還沒測試  
-已經重製過token了 別想偷:>
   
 你會需要[ocr-tesseract](https://github.com/UB-Mannheim/tesseract/wiki) 並且需要把路徑加到環境變數💩  
-  
-這是雷達點名:  
-(但我沒有更新到機器人裡 你要自己接🫶)  
-[![Tronclass_Position](https://github-readme-stats.vercel.app/api/pin/?username=XiaXia009&repo=Tronclass_Position&theme=prussian)](https://github.com/XiaXia009/Tronclass_Position)
+
+<table>
+  <tr>
+    <td>
+      <b>雷達點名:</b><br>
+      (但我沒有更新到機器人裡 你要自己接🫶)
+      <br><br>
+      <a href="https://github.com/XiaXia009/Tronclass_Position">
+        <img src="https://github-readme-stats.vercel.app/api/pin/?username=XiaXia009&repo=Tronclass_Position&theme=prussian" />
+      </a>
+    </td>
+    <td>
+      <b>數字點名 (簡潔版本):</b><br>
+      如果你只是要幫自己點名的話，用這個版本就好
+      <br><br>
+      <a href="https://github.com/silvercow002/tronclass-script">
+        <img src="https://github-readme-stats.vercel.app/api/pin/?username=silvercow002&repo=tronclass-script&theme=prussian" />
+      </a>
+    </td>
+  </tr>
+</table>
 
 ## 如果你想自己架設或開發
 #### 文件介紹
